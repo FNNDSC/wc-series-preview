@@ -207,7 +207,8 @@
       }
 
       _seriesChanged(series) {
-        if (series.details.series.preview.blob === null) {
+        console.log(series);
+        if (series.details.series.preview.blob === null || series.details.series.preview.blob === '') {
           // blob will arrive later, get rteady for it
           const url = series.details.series.preview.url;
           this.$.image.onload = this.centerThumbnail.bind(this);
