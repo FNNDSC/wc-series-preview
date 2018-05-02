@@ -109,7 +109,7 @@
     </style>
 
     <div class="seriesPreview">
-      <div hidden$={{!_seriesActive(active,layout,series)}} class="overlay"></div>
+      <div hidden$={{!_seriesActive(active,currentLayout,series)}} class="overlay"></div>
       <div class="previewContainer">
         <img
           id="image"
@@ -118,8 +118,9 @@
           on-mouseout='centerThumbnail'>
       </div>
       <series-layout-location
-        hidden$="{{!_seriesInLayout(layout, series, tick)}}"
+        hidden$="{{!_seriesInLayout(currentLayout,series,tick)}}"
         layout="[[layout]]"
+        current-layout="[[currentLayout]]"
         series-uid="[[series.details.series.uid]]"
         size="18"></series-layout-location>
       <!-- <div class="about"> -->
@@ -151,9 +152,15 @@
             type: Number,
             observer: '_activeChanged',
           },
-          layout: {
+          currentLayout: {
             type: Array,
-            value: [-1],
+            value: function() {
+              return [-1];
+            }
+          },
+          layout: {
+            type: Number,
+            value: 0,
           },
           series: {
             type: Object,
@@ -168,7 +175,7 @@
 
       static get observers() {
         return [
-            '_layoutChanged(layout.*)',
+            '_layoutChanged(currentLayout.*)',
             '_previewBlobChanged(series.preview.blob)',
           ];
       }
@@ -207,7 +214,6 @@
       }
 
       _seriesChanged(series) {
-        console.log(series);
         if (series.details.series.preview.blob === null || series.details.series.preview.blob === '') {
           // blob will arrive later, get rteady for it
           const url = series.details.series.preview.url;
@@ -220,6 +226,7 @@
       }
 
       _layoutChanged(layout) {
+        console.log(layout);
         this.tick = !this.tick;
       }
 
@@ -228,6 +235,7 @@
       }
 
       _seriesActive(activeWindow, layout, series) {
+        console.log(activeWindow, layout, series);
         if (
           activeWindow === undefined ||
           layout === undefined ||
@@ -241,6 +249,7 @@
       }
 
       _seriesInLayout(layout, series, tick) {
+        console.log(layout, series, tick);
         if (
           layout === undefined ||
           series === undefined) {
