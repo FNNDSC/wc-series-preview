@@ -177,6 +177,7 @@
         return [
             '_layoutChanged(currentLayout.*)',
             '_previewBlobChanged(series.preview.blob)',
+            '_seriesChanged(series.*)',
           ];
       }
 
@@ -202,6 +203,12 @@
           `translateY(-${offset}px)`;
       }
 
+      _seriesChanged(series){
+        if (series.path === 'series.details.series.preview.blob') {
+          this._previewBlobChanged(previewBlob.value);
+        }
+      }
+
       _previewBlobChanged(previewBlob) {
         if (previewBlob === undefined) {
           return;
@@ -216,8 +223,8 @@
       _seriesChanged(series) {
         if (series.details.series.preview.blob === null || series.details.series.preview.blob === '') {
           // blob will arrive later, get rteady for it
-          const url = series.details.series.preview.url;
           this.$.image.onload = this.centerThumbnail.bind(this);
+          const url = series.details.series.preview.url;
           this.$.image.src = url;
         } else {
           // we already have the blob so just display it
