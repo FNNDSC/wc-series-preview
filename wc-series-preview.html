@@ -177,7 +177,7 @@
         return [
             '_layoutChanged(currentLayout.*)',
             '_previewBlobChanged(series.preview.blob)',
-            '_seriesChanged(series.*)',
+            '_seriesDeepChange(series.*)',
           ];
       }
 
@@ -203,9 +203,9 @@
           `translateY(-${offset}px)`;
       }
 
-      _seriesChanged(series){
+      _seriesDeepChange(series){
         if (series.path === 'series.details.series.preview.blob') {
-          this._previewBlobChanged(previewBlob.value);
+          this._previewBlobChanged(series.value);
         }
       }
 
