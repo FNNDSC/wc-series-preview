@@ -114,6 +114,7 @@
         <img
           id="image"
           draggable="false"
+          on-mousedown='onDown'
           on-mousemove='onMove'
           on-mouseout='centerThumbnail'>
       </div>
@@ -156,7 +157,8 @@
             type: Array,
             value: function() {
               return [-1];
-            }
+            },
+            observer: '_currentLayoutChanged',
           },
           layout: {
             type: Number,
@@ -181,11 +183,14 @@
           ];
       }
 
+      onDown(e) {
+        this.$.image.style.display = 'none';
+      }
+
       onMove(e) {
         const target = e.currentTarget;
         const rect = target.getBoundingClientRect();
-        const normalizedPosition =
-          (e.clientX - rect.left) / target.clientWidth;
+        const normalizedPosition = (e.clientX - rect.left) / target.clientWidth;
         this.positionThumbnail(normalizedPosition, target);
       }
 
@@ -233,16 +238,25 @@
       }
 
       _layoutChanged(layout) {
-        console.log(layout);
         this.tick = !this.tick;
+
+        if (this.series === undefined || layout.path === 'currentLayout') {
+          return;
+        }
+
+        // force repaint
+        const act = this.active;
+        this.active = -1;
+        this.active = act;
       }
 
       _activeChanged(active) {
-        // console.log(active);
+      }
+
+      _currentLayoutChanged(currentLayout) {
       }
 
       _seriesActive(activeWindow, layout, series) {
-        console.log(activeWindow, layout, series);
         if (
           activeWindow === undefined ||
           layout === undefined ||
@@ -256,7 +270,6 @@
       }
 
       _seriesInLayout(layout, series, tick) {
-        console.log(layout, series, tick);
         if (
           layout === undefined ||
           series === undefined) {
